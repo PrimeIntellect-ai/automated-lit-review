@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Longevity Research Assistant</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-5">Longevity Research Assistant</h1>
+      <div class="input-group mb-3 mt-5">
+        <input
+          type="text"
+          id="inputText"
+          class="form-control"
+          placeholder="Enter your text here"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            onclick="sendRequest()"
+          >
+            Send Request
+          </button>
+        </div>
+      </div>
+      <p id="response"></p>
+    </div>
+
+    <script>
+      async function sendRequest() {
+        const inputText = document.getElementById("inputText").value;
+        const response = await fetch(
+          "http://localhost:8000/question_answering",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ input_text: inputText }),
+          }
+        );
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        reader.read().then(function processText({ done, value }) {
+          if (done) {
+            return;
+          }
+
+          document.getElementById("response").textContent +=
+            decoder.decode(value);
+          return reader.read().then(processText);
+        });
+      }
+    </script>
+  </body>
+</html>
