@@ -1,0 +1,5 @@
+llama-index
+vecs
+pypdf
+python-dotenv
+fastapi
